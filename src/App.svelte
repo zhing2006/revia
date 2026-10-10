@@ -196,7 +196,7 @@
     };
     if (import.meta.env.PROD && !window.reviaDesktop && 'serviceWorker' in navigator) {
       navigator.serviceWorker.addEventListener('message', offlineMessage);
-      void navigator.serviceWorker.register('./sw.js').then(async registration => {
+      void navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`).then(async registration => {
         const active = registration.active ?? (await navigator.serviceWorker.ready).active;
         active?.postMessage({ type: 'status' });
       }).catch(() => { error = 'resourcesFailed'; });

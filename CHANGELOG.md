@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+
+- Fixed resource loading and offline support when hosting the web app under a subdirectory.
+
 ## [0.1.1] - 2026-10-10
 
 - Added a command-line exporter with automatic processing, optional alignment, color and mask settings, and PNG, mask PNG, and PSD output.

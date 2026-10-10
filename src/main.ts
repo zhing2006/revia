@@ -13,12 +13,13 @@ async function start() {
   splash.append(title, label, progress); target.append(splash);
   if (import.meta.env.PROD) {
     try {
-      const response = await fetch('./offline-manifest.json');
+      const manifestUrl = new URL(`${import.meta.env.BASE_URL}offline-manifest.json`, document.baseURI);
+      const response = await fetch(manifestUrl);
       const { assets } = await response.json() as { assets: string[] };
       const pending = [...assets]; let complete = 0;
       await Promise.all(Array.from({ length: 4 }, async () => {
         while (pending.length) {
-          const response = await fetch(pending.shift()!, { cache: 'force-cache' });
+          const response = await fetch(new URL(pending.shift()!, manifestUrl), { cache: 'force-cache' });
           if (!response.ok) throw new Error('resourcesFailed');
           await response.arrayBuffer(); progress.value = ++complete / assets.length;
           label.textContent = `${translate(locale, 'loadingResources')} ${complete}/${assets.length}`;
@@ -29,4 +30,9 @@ async function start() {
   const { default: App } = await import('./App.svelte');
   target.replaceChildren(); mount(App, { target });
 }
-void start();
+const basePath = import.meta.env.BASE_URL;
+if (import.meta.env.PROD && basePath.startsWith('/') && !location.pathname.startsWith(basePath)) {
+  location.replace(new URL(basePath, location.href));
+} else {
+  void start();
+}
