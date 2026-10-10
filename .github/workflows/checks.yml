@@ -1,0 +1,63 @@
+name: Checks
+
+on:
+  workflow_call:
+    inputs:
+      release:
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  windows:
+    name: Windows x64
+    runs-on: windows-latest
+    timeout-minutes: 30
+    env:
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Test release tooling
+        run: npm run test:release
+      - name: Check changelog
+        if: ${{ !inputs.release }}
+        run: npm run release:check
+      - name: Check release tag
+        if: ${{ inputs.release }}
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: npm run release:check -- "$env:RELEASE_TAG"
+      - name: Unit tests
+        run: npm test
+      - name: Image quality tests
+        run: npm run test:quality
+      - name: Build app
+        if: ${{ !inputs.release }}
+        run: npm run build
+      - name: Build Windows package
+        if: ${{ inputs.release }}
+        run: npm run package:win
+      - name: Test packaged desktop app
+        if: ${{ inputs.release }}
+        env:
+          REVIA_ELECTRON_EXECUTABLE: ${{ github.workspace }}/release/win-unpacked/Revia.exe
+        run: npm exec -- playwright test tests/desktop.spec.ts
+      - name: Upload Windows package
+        if: ${{ inputs.release }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: revia-windows-x64
+          path: release/revia-*-windows-x64.zip
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 7

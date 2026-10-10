@@ -1,0 +1,47 @@
+# Dependencies and package-manager caches
+node_modules/
+.pnpm-store/
+.npm/
+
+# Generated application bundles
+/dist/
+/release/
+
+# Test reports and coverage
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+coverage/
+
+# Compiler and tool caches
+.svelte-check/
+.vite/
+.cache/
+*.tsbuildinfo
+
+# Local environment files; keep shareable examples
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Temporary files and logs
+/tmp/
+/temp/
+*.log
+*.tmp
+*.swp
+*.swo
+*.pid
+*.pid.lock
+*.tgz
+
+# Local editor and operating-system files
+.idea/
+.vscode/*
+!.vscode/extensions.json
+.DS_Store
+._*
+Thumbs.db
+Desktop.ini

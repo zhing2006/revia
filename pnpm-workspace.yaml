@@ -1,0 +1,7 @@
+allowBuilds:
+  electron: true
+  esbuild: true
+  sharp: true
+  electron-winstaller: false
+minimumReleaseAgeExclude:
+  - '@types/node@26.6.5'

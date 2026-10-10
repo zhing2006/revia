@@ -1,0 +1,72 @@
+{
+  "name": "revia",
+  "version": "0.1.1",
+  "license": "Apache-2.0",
+  "description": "Local image compositing with precise masks and original pixel preservation",
+  "type": "module",
+  "main": "electron/main.mjs",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "cli": "node scripts/cli.mjs",
+    "check": "svelte-check --tsgo --tsconfig ./tsconfig.json",
+    "build": "npm run check && vite build && node scripts/offline.mjs",
+    "preview": "node scripts/serve.mjs --no-open",
+    "test": "vitest run",
+    "test:e2e": "npm run build && playwright test",
+    "test:performance": "vitest run --config vitest.performance.config.ts",
+    "test:quality": "vitest run --config vitest.quality.config.ts",
+    "package:win": "npm run build && install-electron && electron-builder --win zip --x64 --publish never",
+    "start": "npm run build && node scripts/serve.mjs",
+    "desktop": "npm run build && install-electron && electron .",
+    "test:release": "node --test tests/release/*.test.mjs",
+    "release:check": "node scripts/release-notes.mjs"
+  },
+  "devDependencies": {
+    "@jsquash/webp": "1.5.0",
+    "@playwright/test": "1.64.0",
+    "@sveltejs/vite-plugin-svelte": "7.3.1",
+    "@types/node": "26.6.5",
+    "@types/three": "0.186.0",
+    "@typescript/native": "npm:typescript@7.0.2",
+    "ag-psd": "31.0.3",
+    "bits-ui": "2.19.5",
+    "electron": "44.7.0",
+    "electron-builder": "26.15.3",
+    "exifr": "7.1.3",
+    "fast-png": "8.0.0",
+    "fflate": "0.8.3",
+    "jpeg-js": "0.4.4",
+    "lcms-wasm": "1.0.5",
+    "sharp": "0.35.5",
+    "svelte": "5.57.2",
+    "svelte-check": "4.7.6",
+    "three": "0.186.1",
+    "typescript": "6.0.3",
+    "vite": "8.3.4",
+    "vitest": "5.0.3"
+  },
+  "build": {
+    "appId": "app.revia.editor",
+    "productName": "Revia",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "package.json"
+    ],
+    "asar": true,
+    "npmRebuild": false,
+    "win": {
+      "target": "zip",
+      "icon": "images/icon.ico",
+      "signExecutable": false,
+      "artifactName": "revia-${version}-windows-${arch}.${ext}"
+    }
+  },
+  "private": true
+}
